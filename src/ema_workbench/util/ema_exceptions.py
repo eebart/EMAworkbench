@@ -1,13 +1,13 @@
 '''
 
-Exceptions and warning used internally by the EMA workbench. In line with 
+Exceptions and warning used internally by the EMA workbench. In line with
 advice given in `PEP 8 <http://www.python.org/dev/peps/pep-0008/>`_.
 '''
 from __future__ import (absolute_import, print_function, division,
                         unicode_literals)
 
 # Created on 31 mei 2011
-# 
+#
 # .. codeauthor:: jhkwakkel <j.h.kwakkel (at) tudelft (dot) nl>
 
 __all__ = ['EMAError',
@@ -31,7 +31,7 @@ class EMAError(BaseException):
 
     def __repr__(self):
         return "%s(*%s)" % (self.__class__.__name__, repr(self.args))
-    
+
 class EMAWarning(EMAError):
     '''
     base EMA warning class
@@ -40,21 +40,21 @@ class EMAWarning(EMAError):
 
 class CaseError(EMAError):
     '''
-    error to be used when a particular run creates an error. The character of 
-    the error can be specified as the message, and the actual case that 
-    gave rise to the error. 
-    
+    error to be used when a particular run creates an error. The character of
+    the error can be specified as the message, and the actual case that
+    gave rise to the error.
+
     '''
     def __init__(self, message, case, policy={'name':"not specified"}):
         self.message = message
         self.case = case
         self.args = (message, case)
         self.policy = policy['name']
-    
+
     def __str__(self):
         keys = sorted(self.case.keys())
-        
-        
+
+
         c = ""
         for key in keys:
             value = self.case.get(key)
@@ -63,11 +63,11 @@ class CaseError(EMAError):
             c += str(value)
             c += ', '
         c+= 'policy:'+self.policy
-        
+
         return self.message + ' case: {' + c + "}"
 
     def __repr__(self):
-        return "%s case: %s " % (self.message, repr(self.case))        
+        return "%s case: %s " % (self.message, repr(self.case))
 
 class EMAParallelError(EMAError):
     '''
