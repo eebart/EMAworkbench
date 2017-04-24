@@ -95,7 +95,6 @@ def check_status():
 
     return vensim.vensim_check_status()
 
-
 def command(command):
     '''execute a command, for details see chapter 5 of the vensim DSS manual'''
 
@@ -103,7 +102,6 @@ def command(command):
     if return_val == 0:
         raise VensimWarning("command failed "+command)
     return return_val
-
 
 def continue_simulation(num_inter):
     '''This method continues the simulation for num_inter Time steps.
@@ -310,7 +308,7 @@ def get_varattrib(varname, attribute):
     ====== =============
 
     '''
-    buf = ctypes.create_string_buffer("", 10)
+    buf = ctypes.create_string_buffer(''.encode('utf-8'), 10)
     maxBuf = ctypes.c_int(10)
 
     bufferlength = vensim.vensim_get_varattrib(varname.encode('utf-8'),
@@ -320,11 +318,11 @@ def get_varattrib(varname, attribute):
     if bufferlength == -1:
         raise VensimWarning("variable not found")
 
-    buf = ctypes.create_string_buffer("", int(bufferlength))
+    buf = ctypes.create_string_buffer(''.encode('utf-8'), int(bufferlength))
     maxBuf = ctypes.c_int(int(bufferlength))
     vensim.vensim_get_varattrib(varname.encode('utf-8'), attribute, buf, maxBuf)
 
-    result = repr(buf.raw)
+    result = repr(buf.raw.decode('utf-8'))
     result = result.strip()
     result = result.rstrip("'")
     result = result.lstrip("'")
@@ -386,7 +384,7 @@ def get_varnames(filter='*', vartype=0):
     maxBuf = ctypes.c_int(int(a))
     vensim.vensim_get_varnames(filter, vartype, buf, maxBuf)
 
-    varnames = repr(buf.raw)
+    varnames = repr(buf.raw.decode('utf-8'))
     varnames = varnames.strip()
     varnames = varnames.rstrip("'")
     varnames = varnames.lstrip("'")
