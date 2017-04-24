@@ -37,37 +37,42 @@ def package_files(root, package_data_dir):
             paths.append(os.path.relpath(full_path, root))
     return paths
 
-example_data_files = package_files('src/examples', 'data')
-example_model_files = package_files('src/examples', 'models')
-java_files = package_files('src/ema_workbench/connectors', 'java')
+example_data_files = package_files('ema_workbench/examples', 'data')
+example_data_files = [''.join(['examples/', entry]) for entry in example_data_files]
+
+example_model_files = package_files('ema_workbench/examples', 'models')
+example_model_files = [''.join(['examples/', entry]) for entry in example_model_files]
+
+java_files = package_files('ema_workbench/connectors', 'java')
 java_files = [''.join(['connectors/', entry]) for entry in java_files]
 
-# print(example_data_files)
-# print(java_files)
+name = 'ema_workbench'
+pjoin = os.path.join
+here = os.path.abspath(os.path.dirname(__file__))
+pkg_root = pjoin(here, name)
 
-VERSION = version('src/ema_workbench/__init__.py')
+packages = []
+for d, _, _ in os.walk(pjoin(here, name)):
+    if os.path.exists(pjoin(d, '__init__.py')):
+        packages.append(d[len(here)+1:].replace(os.path.sep, '.'))
+
+
+VERSION = version('ema_workbench/__init__.py')
 LONG_DESCRIPTION ="""Project Documentation: https://emaworkbench.readthedocs.io/"""
 EXAMPLE_DATA = example_data_files + example_model_files
 JAVA = java_files
-PACKAGES = ['ema_workbench', 
-            'ema_workbench.analysis', 
-            'ema_workbench.connectors', 
-            'ema_workbench.em_framework', 
-            'ema_workbench.util', 
-            'ema_workbench.analysis.cluster_util',
-            'examples']
+PACKAGES = packages
 
 setup(
-    name='ema_workbench',
-    version=VERSION,
-    author='Jan Kwakkel',
-    author_email='j.h.kwakkel@tudelft',
-    packages=PACKAGES,
-    package_dir={'':'./src'},
-    package_data = {'examples': EXAMPLE_DATA, 
-                    'ema_workbench':JAVA},
-    url='https://github.com/quaquel/EMAworkbench',
-    license='BSD 3-Clause',
-    description='exploratory modelling in Python',
-    long_description=LONG_DESCRIPTION,
+    name            = 'ema_workbench',
+    version         = VERSION,
+    description     = 'exploratory modelling in Python',
+    long_description= LONG_DESCRIPTION,
+    author          = 'Jan Kwakkel',
+    author_email    = 'j.h.kwakkel@tudelft',
+    packages        = PACKAGES,
+    package_data    = {'ema_workbench': EXAMPLE_DATA+JAVA},
+    url             = 'https://github.com/quaquel/EMAworkbench',
+    license         = 'BSD 3-Clause',
+    platforms       = "Linux, Mac OS X, Windows",
 )
