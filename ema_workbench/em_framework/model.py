@@ -318,13 +318,13 @@ class Replicator(AbstractModel):
         
         """
         super(Replicator, self).run_model(scenario, policy)
+        
         constants = {c.name:c.value for c in self.constants}
         
         outputs = defaultdict(list)
         
-        policy =  copy.deepcopy(policy)
+        policy = copy.deepcopy(self.policy)
         partial_experiment = combine(scenario, policy, constants)
-              
         
         for _, rep in enumerate(self.replications):
             experiment = copy.deepcopy(partial_experiment)
@@ -352,8 +352,9 @@ class SingleReplication(AbstractModel):
         super(SingleReplication, self).run_model(scenario, policy) 
         # TODO:: should this not be moved up?
         constants = {c.name:c.value for c in self.constants}
-        experiment = combine(scenario, policy, constants)
+        experiment = combine(scenario, self.policy, constants)
         self.output = self.run_experiment(experiment)
+
 
 class BaseModel(AbstractModel):
     '''
