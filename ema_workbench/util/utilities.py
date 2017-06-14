@@ -65,9 +65,12 @@ def load_results(file_name):
     with tarfile.open(file_name, 'r:gz', encoding="UTF8") as z:
         # load x
         experiments = z.extractfile('experiments.csv')
-        df = pd.io.parsers.read_table(experiments, sep=',')  # @UndefinedVariable
-        experiments = df.to_records()
-        experiments = recfunctions.drop_fields(experiments, ['index'])
+        if not (hasattr(experiments, 'read')):
+            raise EMAError(repr(experiments))
+        
+        df = pd.read_csv(experiments)
+        experiments = df.to_records(index=False)
+#         experiments = recfunctions.drop_fields(experiments, ['index'])
 
         # load experiment metadata
         metadata = z.extractfile('experiments metadata.csv').readlines()
@@ -112,7 +115,7 @@ def load_results(file_name):
                         temp_shape.append(int(entry))
                     except ValueError:
                         try:
-                            temp_shape.append(int(long(entry)))
+                            temp_shape.append(int(long(entry))) #@UndefinedVariable
                         except NameError: # we are on python3
                             temp_shape.append(int(entry[0:-1]))
             shape = tuple(temp_shape)
